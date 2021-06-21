@@ -1,4 +1,4 @@
-class ExercisesController < ApplicationController
+class Api::V1::ExercisesController < ApplicationController
   before_action :set_exercise, only: [:show, :update, :destroy]
 
   # GET /exercises
