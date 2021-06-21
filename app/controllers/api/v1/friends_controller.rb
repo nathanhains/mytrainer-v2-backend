@@ -1,4 +1,4 @@
-class FriendsController < ApplicationController
+class Api::V1::FriendsController < ApplicationController
   before_action :set_friend, only: [:show, :update, :destroy]
 
   # GET /friends
