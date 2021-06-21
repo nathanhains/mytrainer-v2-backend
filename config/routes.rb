@@ -6,6 +6,7 @@ Rails.application.routes.draw do
       resources :exercises
       resources :set_groups  
       resources :workout_exercises
+      resources :friends
     end
   end
 end
