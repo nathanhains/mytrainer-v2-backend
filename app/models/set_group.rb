@@ -1,0 +1,2 @@
+class SetGroup < ApplicationRecord
+end
