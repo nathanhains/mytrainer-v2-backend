@@ -18,9 +18,12 @@ class Api::V1::WorkoutsController < ApplicationController
     @workout = Workout.new(workout_params)
 
     if @workout.save
-      render json: @workout, status: :created, location: @workout
+      render json: @workout, status: :created
     else
-      render json: @workout.errors, status: :unprocessable_entity
+      resp = {
+        error: @workout.errors.full_messages.to_sentence
+      }
+      render json: resp, status: :unprocessable_entity
     end
   end
 
@@ -46,6 +49,6 @@ class Api::V1::WorkoutsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def workout_params
-      params.require(:workout).permit(:name, :notes)
+      params.require(:workout).permit(:name, :notes, :user_id)
     end
 end
