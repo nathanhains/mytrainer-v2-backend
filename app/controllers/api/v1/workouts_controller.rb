@@ -4,8 +4,8 @@ class Api::V1::WorkoutsController < ApplicationController
   # GET /workouts
   def index
     @workouts = Workout.all
-
-    render json: @workouts
+    
+    render json: WorkoutSerializer.new(@workouts)
   end
 
   # GET /workouts/1
