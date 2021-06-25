@@ -4,7 +4,7 @@ class Api::V1::WorkoutsController < ApplicationController
   # GET /workouts
   def index
     @workouts = Workout.all
-    
+
     render json: WorkoutSerializer.new(@workouts)
   end
 
@@ -18,7 +18,7 @@ class Api::V1::WorkoutsController < ApplicationController
     @workout = Workout.new(workout_params)
 
     if @workout.save
-      render json: @workout, status: :created
+      render json: WorkoutSerializer.new(@workout), status: :created
     else
       resp = {
         error: @workout.errors.full_messages.to_sentence
@@ -30,9 +30,12 @@ class Api::V1::WorkoutsController < ApplicationController
   # PATCH/PUT /workouts/1
   def update
     if @workout.update(workout_params)
-      render json: @workout
+      render json: WorkoutSerializer.new(@workout)
     else
-      render json: @workout.errors, status: :unprocessable_entity
+      resp = {
+        error: @workout.errors.full_messages.to_sentence
+      }
+      render json: resp, status: :unprocessable_entity
     end
   end
 
