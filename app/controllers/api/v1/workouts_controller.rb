@@ -16,8 +16,17 @@ class Api::V1::WorkoutsController < ApplicationController
   # POST /workouts
   def create
     @workout = Workout.new(workout_params)
-
     if @workout.save
+      if !params[:workout][:exercises].empty? 
+        params[:workout][:exercises].map do |e|
+          exercise = WorkoutExercise.new(workout_id: @workout.id, exercise_id: e[:id].to_i)
+          if exercise.save && !e[:addedSets].empty?
+            e[:addedSets].map do |s|
+              exercise.set_groups.create(lbs: s[:lbs].to_i, reps: s[:reps].to_i)
+            end
+          end
+        end
+      end
       render json: WorkoutSerializer.new(@workout), status: :created
     else
       resp = {
