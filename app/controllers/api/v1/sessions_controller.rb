@@ -1,9 +1,12 @@
 class Api::V1::SessionsController < ApplicationController
+    skip_before_action :authorized, only: [:create, :get_current_user]
+
     def create
         @user = User.find_by(username: params[:session][:username])
+
         if @user && @user.authenticate(params[:session][:password])
-            session[:user_id] = @user.id
-            render json: UserSerializer.new(@user), status: :ok
+            token = encode_token({ user_id: @user.id })
+            render json: {user: UserSerializer.new(@user), jwt: token}, status: :ok
         else
             render json: {
                 error: "Invalid Credentials"
@@ -13,11 +16,7 @@ class Api::V1::SessionsController < ApplicationController
 
     def get_current_user
         if logged_in?
-            render json: UserSerializer.new(current_user)
-        else
-            render json: {
-                error: "Log in required"
-            }
+            render json: {user: UserSerializer.new(current_user)}
         end
     end
 
