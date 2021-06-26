@@ -17,16 +17,7 @@ class Api::V1::WorkoutsController < ApplicationController
   def create
     @workout = Workout.new(workout_params)
     if @workout.save
-      if !params[:workout][:exercises].empty? 
-        params[:workout][:exercises].map do |e|
-          exercise = WorkoutExercise.new(workout_id: @workout.id, exercise_id: e[:id].to_i)
-          if exercise.save && !e[:addedSets].empty?
-            e[:addedSets].map do |s|
-              exercise.set_groups.create(lbs: s[:lbs].to_i, reps: s[:reps].to_i)
-            end
-          end
-        end
-      end
+      set_relations
       render json: WorkoutSerializer.new(@workout), status: :created
     else
       resp = {
@@ -38,7 +29,10 @@ class Api::V1::WorkoutsController < ApplicationController
 
   # PATCH/PUT /workouts/1
   def update
+    reset_relations
     if @workout.update(workout_params)
+      set_relations
+      set_workout
       render json: WorkoutSerializer.new(@workout)
     else
       resp = {
@@ -55,6 +49,29 @@ class Api::V1::WorkoutsController < ApplicationController
 
   private
     # Use callbacks to share common setup or constraints between actions.
+    def reset_relations
+      if @workout.workout_exercises
+        @workout.workout_exercises.map do |w| 
+          w.destroy
+        end
+      end
+    end
+
+    def set_relations
+      if params[:workout][:exercises] && !params[:workout][:exercises].empty? 
+        params[:workout][:exercises].map do |e|
+          exercise = WorkoutExercise.new(workout_id: @workout.id, exercise_id: e[:id].to_i)
+          if exercise.save && e[:addedSets] && !e[:addedSets].empty?
+            e[:addedSets].map do |s|
+              lbs = s[:lbs] == "" ? "" : s[:lbs].to_i
+              reps = s[:reps] == "" ? "" : s[:reps].to_i
+              exercise.set_groups.create(lbs: lbs, reps: reps)
+            end
+          end
+        end
+      end
+    end
+
     def set_workout
       @workout = Workout.find(params[:id])
     end
