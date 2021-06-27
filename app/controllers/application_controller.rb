@@ -20,10 +20,6 @@ class ApplicationController < ActionController::API
         end
     end 
 
-    # def current_user 
-    #     User.find_by(id: session[:user_id])
-    # end
-
     def current_user
         if decoded_token
           user_id = decoded_token[0]['user_id']
