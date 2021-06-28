@@ -1,9 +1,10 @@
 class Api::V1::WorkoutsController < ApplicationController
   before_action :set_workout, only: [:show, :update, :destroy]
+  before_action :current_user, only: [:index]
 
   # GET /workouts
   def index
-    @workouts = Workout.all
+    @workouts = Workout.all.select{|w| w.user_id == @user.id}
 
     render json: WorkoutSerializer.new(@workouts)
   end
