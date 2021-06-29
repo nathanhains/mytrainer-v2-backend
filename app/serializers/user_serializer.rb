@@ -5,4 +5,8 @@ class UserSerializer
   attribute :workouts do |obj|
     WorkoutSerializer.new(obj.workouts)
   end
+
+  attribute :followers
+  attribute :followees
+
 end

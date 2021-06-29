@@ -1,11 +1,10 @@
 class Api::V1::FriendsController < ApplicationController
   before_action :set_friend, only: [:show, :update, :destroy]
-
   # GET /friends
   def index
     @friends = Friend.all
 
-    render json: @friends
+    render json: FriendSerializer.new(@friends)
   end
 
   # GET /friends/1
@@ -18,9 +17,12 @@ class Api::V1::FriendsController < ApplicationController
     @friend = Friend.new(friend_params)
 
     if @friend.save
-      render json: @friend, status: :created, location: @friend
+      render json: FriendSerializer.new(@friend), status: :created
     else
-      render json: @friend.errors, status: :unprocessable_entity
+      resp = {
+        error: @friend.errors.full_messages.to_sentence
+      }
+      render json: resp, status: :unprocessable_entity
     end
   end
 
@@ -46,6 +48,6 @@ class Api::V1::FriendsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def friend_params
-      params.fetch(:friend, {})
+      params.require(:friend).permit(:follower_id, :followee_id)
     end
 end
