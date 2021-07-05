@@ -1,5 +1,6 @@
 class WorkoutExerciseSerializer
   include FastJsonapi::ObjectSerializer
+
   attribute :exercise do |obj|
     ExerciseSerializer.new(obj.exercise)
   end

@@ -1,9 +1,9 @@
 class Api::V1::FriendsController < ApplicationController
   before_action :set_friend, only: [:show, :update, :destroy]
+  skip_before_action :authorized, only: [:index]
   # GET /friends
   def index
     @friends = Friend.all
-
     render json: FriendSerializer.new(@friends)
   end
 
@@ -14,7 +14,7 @@ class Api::V1::FriendsController < ApplicationController
 
   # POST /friends
   def create
-    @friend = Friend.new(friend_params)
+    @friend = Friend.find_or_create_by(friend_params)
 
     if @friend.save
       render json: FriendSerializer.new(@friend), status: :created

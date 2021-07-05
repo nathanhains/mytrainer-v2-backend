@@ -4,7 +4,12 @@ class Api::V1::WorkoutsController < ApplicationController
 
   # GET /workouts
   def index
-    @workouts = Workout.all.select{|w| w.user_id == @user.id}
+    if !@user.followees.empty? 
+      friends = @user.followees.map(&:workouts)[0]
+    end
+    params[:friends] == "false" ? 
+    @workouts = Workout.all.select{|w| w.user_id == @user.id} :
+    @workouts = friends.map{|f| Workout.all.select{|w| w.user_id == @user.id}.push(f)}[-1]
 
     render json: WorkoutSerializer.new(@workouts)
   end
