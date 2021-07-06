@@ -10,6 +10,7 @@ Rails.application.routes.draw do
       resources :workouts
       resources :exercises
       resources :friends
+      resources :notifications
     end
   end
 end

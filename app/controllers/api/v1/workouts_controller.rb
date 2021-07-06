@@ -7,7 +7,8 @@ class Api::V1::WorkoutsController < ApplicationController
     if !@user.followees.empty? 
       friends = @user.followees.map(&:workouts)[0]
     end
-    params[:friends] == "false" ? 
+    
+    params[:friends] == "false" || @user.followees.empty? ? 
     @workouts = Workout.all.select{|w| w.user_id == @user.id} :
     @workouts = friends.map{|f| Workout.all.select{|w| w.user_id == @user.id}.push(f)}[-1]
 
