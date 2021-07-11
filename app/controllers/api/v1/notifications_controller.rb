@@ -3,7 +3,7 @@ class Api::V1::NotificationsController < ApplicationController
 
   # GET /notifications
   def index
-    @notifications = Notification.all.where(recipient_id: @user.id)
+    @notifications = Notification.all.select{|w| w.recipient_id == @user.id}
     @notifications = @notifications.length() >= 20 ? @notifications.slice(-20) : @notifications
     render json: NotificationSerializer.new(@notifications)
   end

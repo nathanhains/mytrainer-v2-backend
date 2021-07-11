@@ -41,7 +41,7 @@ ActiveRecord::Schema.define(version: 2021_07_06_010812) do
     t.integer "recipient_id"
     t.integer "sender_id"
     t.text "activity_type"
-    t.boolean "is_unread", default: true
+    t.boolean "is_unread"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
